@@ -1,20 +1,21 @@
 {
   "name": "rdm6300",
-  "version": "2.0.0",
+  "version": "2.0.0-stream",
   "keywords": "rdm6300, rfid",
-  "description": "A simple library to interface with rdm6300 rfid reader.",
-  "repository":
-  {
+  "description": "A simple library to interface with rdm6300 rfid reader, modified not to depend on SoftwareSerial.",
+  "repository": {
     "type": "git",
-    "url": "https://github.com/arduino12/rdm6300.git"
+    "url": "https://github.com/SvizelPritula/rdm6300.git"
   },
-  "authors":
-  [
+  "authors": [
     {
       "name": "Arad Eizen",
-      "email": "https://github.com/arduino12",
-      "url": "https://github.com/arduino12",
-	  "maintainer": true
+      "url": "https://github.com/arduino12"
+    },
+    {
+      "name": "Benjamin Swart",
+      "url": "https://github.com/SvizelPritula",
+      "maintainer": true
     }
   ],
   "frameworks": "arduino",

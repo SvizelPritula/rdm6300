@@ -1,6 +1,8 @@
 /*
  * A simple library to interface with rdm6300 rfid reader.
+ *
  * Arad Eizen (https://github.com/arduino12).
+ * Benjamin Swart (https://github.com/SvizelPritula).
  */
 
 #include "rdm6300.h"
@@ -13,44 +15,9 @@ void Rdm6300::begin(Stream *stream)
 	_stream->setTimeout(RDM6300_READ_TIMEOUT);
 }
 
-void Rdm6300::begin(int rx_pin, uint8_t uart_nr)
-{
-	/* init serial port to rdm6300 baud, without TX, and 20ms read timeout */
-	end();
-#if defined(ARDUINO_ARCH_ESP32)
-	_stream = _hardware_serial = new HardwareSerial(uart_nr);
-	_hardware_serial->begin(RDM6300_BAUDRATE, SERIAL_8N1, rx_pin, -1);
-#elif defined(ARDUINO_ARCH_ESP8266)
-	if (rx_pin == 13) {
-		_stream = _hardware_serial = &Serial;
-		_hardware_serial->begin(RDM6300_BAUDRATE, SERIAL_8N1, SERIAL_RX_ONLY);
-		if (uart_nr)
-			_hardware_serial->swap();
-	}
-#elif defined(ARDUINO_ARCH_SAMD)
-	_stream = _hardware_serial = (uart_nr == 2 ? &Serial2 : &Serial1);
-	_hardware_serial->begin(RDM6300_BAUDRATE, SERIAL_8N1);
-#endif
-#ifdef RDM6300_SOFTWARE_SERIAL
-	if (!_stream) {
-		_stream = _software_serial = new SoftwareSerial(rx_pin, -1);
-		_software_serial->begin(RDM6300_BAUDRATE);
-	}
-#endif
-	begin(_stream);
-}
-
 void Rdm6300::end()
 {
 	_stream = NULL;
-#ifdef RDM6300_HARDWARE_SERIAL
-	if (_hardware_serial)
-		_hardware_serial->end();
-#endif
-#ifdef RDM6300_SOFTWARE_SERIAL
-	if (_software_serial)
-		_software_serial->end();
-#endif
 }
 
 uint32_t Rdm6300::_read_tag_id(void)
@@ -102,9 +69,11 @@ void Rdm6300::_update(void)
 	uint32_t tag_id = _read_tag_id();
 
 	/* if a new tag appears- return it */
-	if (tag_id) {
+	if (tag_id)
+	{
 		_tag_id = tag_id;
-		if (_last_tag_id != tag_id) {
+		if (_last_tag_id != tag_id)
+		{
 			_last_tag_id = tag_id;
 			_new_tag_id = tag_id;
 		}
@@ -153,15 +122,3 @@ uint32_t Rdm6300::get_new_tag_id(void)
 	_new_tag_id = 0;
 	return tag_id;
 }
-
-#ifdef RDM6300_SOFTWARE_SERIAL
-void Rdm6300::listen(void)
-{
-	_software_serial->listen();
-}
-
-bool Rdm6300::is_listening(void)
-{
-	return _software_serial->isListening();
-}
-#endif

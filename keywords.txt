@@ -16,8 +16,6 @@ end				KEYWORD2
 set_tag_timeout	KEYWORD2
 get_tag_id		KEYWORD2
 get_new_tag_id	KEYWORD2
-listen			KEYWORD2
-is_listening	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
